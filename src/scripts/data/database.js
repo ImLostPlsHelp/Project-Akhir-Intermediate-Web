@@ -8,6 +8,7 @@ const dbPromise = openDB(DATABASE_NAME, DATABASE_VERSION, {
   upgrade: (database) => {
     database.createObjectStore(OBJECT_STORE_NAME, {
       keyPath: "id",
+      autoIncrement: true,
     });
   },
 });
@@ -18,10 +19,10 @@ const Database = {
   },
 
   async putStory(story) {
-    if (!id) {
-      throw new Error("`id` is required.");
+    if(!id) {
+        throw new Error("`id` is required.");
     }
-    return (await dbPromise).get(OBJECT_STORE_NAME, id);
+    return (await dbPromise).put(OBJECT_STORE_NAME, story);
   },
 
   async removeStory(id) {
@@ -29,7 +30,14 @@ const Database = {
         throw new Error("`id` is required.");
     }
     return (await dbPromise).delete()
-  }
+  },
+
+  async getStory(id) {
+    if (!id) {
+        throw new Error("`id` is required.");
+    }
+    return (await dbPromise).get(OBJECT_STORE_NAME, id);
+  },
 };
 
 export default Database;

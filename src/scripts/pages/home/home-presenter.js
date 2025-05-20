@@ -24,12 +24,11 @@ export default class HomePresenter {
       console.log(story.id);
       const saveStory = await this.#model.getStoryById(story.id);
       console.log(saveStory);
-      await this.#database.addStory(saveStory);
+      await this.#database.addStory(saveStory.story);
 
       this.#view.saveToBookmarkSuccessfully('Success to save to bookmark');
     } catch (error) {
       this.#view.showError(error.message);
     }
   }
-
 }

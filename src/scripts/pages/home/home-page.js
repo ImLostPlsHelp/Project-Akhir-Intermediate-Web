@@ -97,4 +97,8 @@ export default class HomePage {
     alert(message);
     console.log(message);
   }
+
+  saveToBookmarkSuccessfully(message) {
+    alert(message);
+  }
 }

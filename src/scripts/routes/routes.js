@@ -2,6 +2,7 @@ import HomePage from "../pages/home/home-page";
 import AddStory from "../pages/addstory/addstory-page";
 import LoginPage from "../pages/login/login-page";
 import RegisterPage from "../pages/register/register-page";
+import SavedStoriesPage from "../pages/savedstories/savedstories-page";
 import { getTokenOrRedirect } from "../utils";
 import { getActiveRoute } from "./url-parser";
 
@@ -10,6 +11,7 @@ const routes = {
   "/add": new AddStory(),
   "/login": new LoginPage(),
   "/register": new RegisterPage(),
+  "/saved": new SavedStoriesPage(),
 };
 
 const publicRoutes = ["/login", "/register"];

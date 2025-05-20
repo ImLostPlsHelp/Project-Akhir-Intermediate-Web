@@ -5,6 +5,7 @@ const ENDPOINTS = {
   ADD_STORY: `${CONFIG.BASE_URL}/stories`,
   LOGIN: `${CONFIG.BASE_URL}/login`,
   REGISTER: `${CONFIG.BASE_URL}/register`,
+  GET_STORY_BY_ID: (id) => `${CONFIG.BASE_URL}/stories/:${id}`
 };
 
 export async function getAllStories() {
@@ -76,4 +77,19 @@ export async function register(name, email, password) {
     ...json,
     ok: fetchResponse.ok,
   };
+}
+
+export async function getStoryById(id) {
+  const fetchResponse = await fetch(ENDPOINTS.GET_STORY_BY_ID(id), {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${CONFIG.ACCESS_TOKEN}`,
+    },
+  });
+  const json = await fetchResponse.json();
+
+  return {
+    ...json,
+    ok: fetchResponse.ok,
+  }
 }

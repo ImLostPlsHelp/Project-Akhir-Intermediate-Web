@@ -67,8 +67,14 @@ export default class HomePage {
       <p>${story.description}</p>
       <p>${story.createdAt}</p>
       <img src="${story.photoUrl}" alt="${story.name}" />
-      <button onClick=this.presenter.saveStoryToDatabase(${JSON.stringify(story)})>Save to Bookmark</button>
+      <button class="bookmark-button">Save to Bookmark</button>
     `;
+
+    const bookmarkButton = storyItem.querySelector(".bookmark-button");
+    bookmarkButton.addEventListener("click", async () => {
+      console.log(story)
+        this.presenter.saveStoryToDatabase(story);
+    })
       storiesList.appendChild(storyItem);
     });
 

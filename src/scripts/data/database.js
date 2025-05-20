@@ -18,26 +18,26 @@ const Database = {
     return (await dbPromise).getAll(OBJECT_STORE_NAME);
   },
 
-  async putStory(story) {
-    if(!id) {
+  async addStory(story) {
+    if(!Object.hasOwn(story, "id")) {
         throw new Error("`id` is required.");
     }
     return (await dbPromise).put(OBJECT_STORE_NAME, story);
   },
 
-  async removeStory(id) {
-    if (!id) {
+  async removeStory(story) {
+    if (!Object.hasOwn(story, "id")) {
         throw new Error("`id` is required.");
     }
-    return (await dbPromise).delete()
+    return (await dbPromise).delete(OBJECT_STORE_NAME, id);
   },
 
-  async getStory(id) {
-    if (!id) {
-        throw new Error("`id` is required.");
-    }
-    return (await dbPromise).get(OBJECT_STORE_NAME, id);
-  },
+  // async getStory(id) {
+  //   if (!id) {
+  //       throw new Error("`id` is required.");
+  //   }
+  //   return (await dbPromise).get(OBJECT_STORE_NAME, id);
+  // },
 };
 
 export default Database;

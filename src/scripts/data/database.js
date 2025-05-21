@@ -29,7 +29,7 @@ const Database = {
     if (!Object.hasOwn(story, "id")) {
         throw new Error("`id` is required.");
     }
-    return (await dbPromise).delete(OBJECT_STORE_NAME, id);
+    return (await dbPromise).delete(OBJECT_STORE_NAME, story.id);
   },
 
   // async getStory(id) {

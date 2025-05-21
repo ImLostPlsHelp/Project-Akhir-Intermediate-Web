@@ -19,7 +19,6 @@ export default class SavedStoriesPage {
       </section>
 
       <section id="saved-stories" class="container">
-        <h2>Saved Stories</h2>
         <div id="saved-stories-list" class="stories-list"></div>
       </section>
     `;

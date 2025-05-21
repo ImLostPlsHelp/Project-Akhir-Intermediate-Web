@@ -14,4 +14,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.addEventListener("hashchange", async () => {
     await app.renderPage();
   });
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      console.log("Masuk pak eko");
+      navigator.serviceWorker
+        .register("/service-worker.js")
+        .then((registration) => {
+          console.log("SW registered: ", registration);
+        })
+        .catch((registrationError) => {
+          console.log("SW registration failed: ", registrationError);
+        });
+    });
+  }
 });

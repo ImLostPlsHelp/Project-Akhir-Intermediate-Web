@@ -1,12 +1,14 @@
 const path = require("path");
+const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
 
 module.exports = {
   mode: "production",
-  entry: "./src/public/service-worker.js",
-  output: {
-    filename: "service-worker.js",
-    path: path.resolve(__dirname, "dist"),
-  },
+  plugins: [
+    new WorkboxWebpackPlugin.InjectManifest({
+      swSrc: "./src/public/service-worker.js",
+      swDest: "service-worker.js",
+    }),
+  ],
   module: {
     rules: [
       {

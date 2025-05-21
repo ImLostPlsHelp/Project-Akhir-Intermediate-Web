@@ -1,9 +1,10 @@
 import HomePresenter from "./home-presenter";
 import * as StoriesAPI from "../../data/api";
+import Database from "../../data/database";
 
 export default class HomePage {
   constructor() {
-    this.presenter = new HomePresenter({ view: this, model: StoriesAPI });
+    this.presenter = new HomePresenter({ view: this, model: StoriesAPI, database: Database});
     this.showError = this.showError.bind(this);
   }
 
@@ -66,7 +67,14 @@ export default class HomePage {
       <p>${story.description}</p>
       <p>${story.createdAt}</p>
       <img src="${story.photoUrl}" alt="${story.name}" />
+      <button class="bookmark-button">Save to Bookmark</button>
     `;
+
+    const bookmarkButton = storyItem.querySelector(".bookmark-button");
+    bookmarkButton.addEventListener("click", async () => {
+      console.log(story)
+        this.presenter.saveStoryToDatabase(story);
+    })
       storiesList.appendChild(storyItem);
     });
 
@@ -82,5 +90,15 @@ export default class HomePage {
     } catch (error) {
       this.showError(error.message);
     }
+  }
+
+
+  saveToBookmarkSuccess(message) {
+    alert(message);
+    console.log(message);
+  }
+
+  saveToBookmarkSuccessfully(message) {
+    alert(message);
   }
 }

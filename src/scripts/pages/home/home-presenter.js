@@ -1,10 +1,12 @@
 export default class HomePresenter {
   #view;
   #model;
+  #database;
 
-  constructor({ view, model }) {
+  constructor({ view, model, database }) {
     this.#view = view;
     this.#model = model;
+    this.#database = database;
   }
 
   async getAllStories() {
@@ -16,17 +18,17 @@ export default class HomePresenter {
     }
   }
 
-async handleFormSubmit(formData) {
-  try {
-    const response = await this.#model.addStory(formData);
-    if (response.ok) {
-      this.#view.onStoryAdded();
-    } else {
-      this.#view.showError(response.message);
-    }
-  } catch (error) {
-    this.#view.showError("Network error");
-  }
-}
+  async saveStoryToDatabase(story) {
+    try {
+      console.log(story);
+      console.log(story.id);
+      const saveStory = await this.#model.getStoryById(story.id);
+      console.log(saveStory);
+      await this.#database.addStory(saveStory.story);
 
+      this.#view.saveToBookmarkSuccessfully('Success to save to bookmark');
+    } catch (error) {
+      this.#view.showError(error.message);
+    }
+  }
 }

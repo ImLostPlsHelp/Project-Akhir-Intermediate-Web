@@ -9,19 +9,29 @@ const ENDPOINTS = {
 };
 
 export async function getAllStories() {
-  const fetchResponse = await fetch(ENDPOINTS.GET_ALL_STORIES, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${CONFIG.ACCESS_TOKEN}`,
-    },
-  });
-  const json = await fetchResponse.json();
+  try {
+    const fetchResponse = await fetch(ENDPOINTS.GET_ALL_STORIES, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${CONFIG.ACCESS_TOKEN}`,
+      },
+    });
+    const json = await fetchResponse.json();
 
-  return {
-    ...json,
-    ok: fetchResponse.ok,
-  };
-
+    return {
+      ...json,
+      ok: fetchResponse.ok,
+    };
+  } catch (error) {
+    const cache = await caches.open('stories-cache');
+    const cachedResponse = await cache.match(ENDPOINTS.GET_ALL_STORIES);
+    
+    if (cachedResponse) {
+      return await cachedResponse.json();
+    }
+    
+    throw error;
+  }
 }
 
 export async function addStory(formData) {

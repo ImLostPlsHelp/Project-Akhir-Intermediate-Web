@@ -52,7 +52,9 @@ self.addEventListener('fetch', (event) => {
 
 self.addEventListener('push', (event) => {
   if (event.data) {
+    console.log("Ini event.data " + event.data);
     const notificationData = event.data.json();
+    console.log("Ini notification Data " + notificationData);
     const options = {
       body: notificationData.message,
       icon: '/favicon.png',

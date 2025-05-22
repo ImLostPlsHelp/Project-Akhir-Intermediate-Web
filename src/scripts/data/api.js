@@ -104,3 +104,45 @@ export async function getStoryById(id) {
     ok: fetchResponse.ok,
   }
 }
+
+export async function subscribeToPushNotification(endpoint, keys) {
+  const fetchResponse = await fetch(`${CONFIG.BASE_URL}/notifications/subscribe`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${CONFIG.ACCESS_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      endpoint: endpoint,
+      keys: {
+        p256dh: keys.p256dh,
+        auth: keys.auth
+      }
+    })
+  });
+  const json = await fetchResponse.json();
+  
+  return {
+    ...json,
+    ok: fetchResponse.ok,
+  }
+}
+
+export async function unsubscribeToPushNotification(endpoint) {
+  const fetchResponse = await fetch(`${CONFIG.BASE_URL}/notifications/subscribe`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${CONFIG.ACCESS_TOKEN}`,
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      endpoint,
+    })
+  });
+  const json = await fetchResponse.json();
+
+  return {
+    ...json,
+    ok: fetchResponse.ok,
+  }
+}

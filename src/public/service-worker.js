@@ -49,3 +49,30 @@ self.addEventListener('fetch', (event) => {
     );
   }
 });
+
+self.addEventListener('push', (event) => {
+  if (event.data) {
+    const notificationData = event.data.json();
+    const options = {
+      body: notificationData.message,
+      icon: '/favicon.png',
+      badge: '/favicon.png',
+      vibrate: [100, 50, 100],
+      data: {
+        url: notificationData.url || '/'
+      }
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(notificationData.title, options)
+    );
+  }
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  
+  event.waitUntil(
+    clients.openWindow(event.notification.data.url)
+  );
+});

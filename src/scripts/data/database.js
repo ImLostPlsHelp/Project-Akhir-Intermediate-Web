@@ -31,13 +31,6 @@ const Database = {
     }
     return (await dbPromise).delete(OBJECT_STORE_NAME, story.id);
   },
-
-  // async getStory(id) {
-  //   if (!id) {
-  //       throw new Error("`id` is required.");
-  //   }
-  //   return (await dbPromise).get(OBJECT_STORE_NAME, id);
-  // },
 };
 
 export default Database;

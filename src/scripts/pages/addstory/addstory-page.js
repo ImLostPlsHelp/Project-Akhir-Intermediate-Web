@@ -8,6 +8,7 @@ export default class AddStory {
       this.showError = this.showError.bind(this);
       this.onStoryAdded = this.onStoryAdded.bind(this);
       this.cameraStream = null;
+      this.capturedPhotoFile = null;
     }
 
   async render() {
@@ -19,25 +20,69 @@ export default class AddStory {
       <section class="container form">
         <button id="add-story-button">Add Story</button>
       </section>
+
+      <section class="container">
+        <label for="subscribe-notification">Want to notified when you add a new story?</label>
+        <button id="subscribe-notification">Subscribe</button>
+      </section>
     `;
   }
 
   async afterRender() {
     // Do your job here
-    document
-      .getElementById("add-story-button")
-      .addEventListener("click", () => {
-        const existingForm = document.getElementById("add-story-form");
-        if (!existingForm) {
-          this.renderAddStoryForm();
-          this.initCamera();
-          document.getElementById("add-story-form").style.display = "block";
-        } else {
-          existingForm.style.display =
-            existingForm.style.display === "block" ? "none" : "block";
-        }
-      });
-  }
+    const isSubscribed = await this.checkPushNotificationStatus();
+      this.updateSubscribeButton(isSubscribed);
+
+      // Add story button event listener
+      document
+        .getElementById("add-story-button")
+        .addEventListener("click", () => {
+          const existingForm = document.getElementById("add-story-form");
+          if (!existingForm) {
+            this.renderAddStoryForm();
+            this.initCamera();
+            document.getElementById("add-story-form").style.display = "block";
+          } else {
+            existingForm.style.display =
+              existingForm.style.display === "block" ? "none" : "block";
+          }
+        });
+
+      // Subscribe button event listener
+      document
+        .getElementById("subscribe-notification")
+        .addEventListener("click", () => {
+          this.presenter.handlePushNotificationToggle();
+        });
+    }
+
+    // Push Notification Methods
+    async checkPushNotificationStatus() {
+      return await initializePushNotifications();
+    }
+
+    async subscribeToPushNotification() {
+      return await subscribeUserToPush();
+    }
+
+    async unsubscribeFromPushNotification() {
+      return await unsubscribeFromPush();
+    }
+
+    updateSubscribeButton(isSubscribed) {
+      const button = document.getElementById("subscribe-notification");
+      button.textContent = isSubscribed 
+        ? "Unsubscribe from Notifications" 
+        : "Subscribe to Notifications";
+    }
+
+    showLoading(isLoading) {
+      const submitButton = document.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = isLoading;
+        submitButton.textContent = isLoading ? "Submitting..." : "Submit";
+      }
+    }
 
   stopCurrentStream = () => {
       if (!(this.cameraStream instanceof MediaStream)) return;

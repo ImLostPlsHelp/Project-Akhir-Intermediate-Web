@@ -7,17 +7,34 @@ export default class AddStoryPresenter {
     this.#model = model;
   }
 
-async handleFormSubmit(formData) {
-  try {
-    const response = await this.#model.addStory(formData);
-    if (response.ok) {
-      this.#view.onStoryAdded();
-    } else {
-      this.#view.showError(response.message);
+  async handleFormSubmit(formData) {
+    try {
+      this.#view.showLoading(true);
+      const response = await this.#model.addStory(formData);
+      if (response.ok) {
+        this.#view.onStoryAdded();
+      } else {
+        this.#view.showError(response.message);
+      }
+    } catch (error) {
+      this.#view.showError("Network error");
+    } finally {
+      this.#view.showLoading(false);
     }
-  } catch (error) {
-    this.#view.showError("Network error");
   }
-}
 
+  async handlePushNotificationToggle() {
+    try {
+      const isSubscribed = await this.#view.checkPushNotificationStatus();
+      if (isSubscribed) {
+        await this.#view.unsubscribeFromPushNotification();
+        this.#view.updateSubscribeButton(false);
+      } else {
+        await this.#view.subscribeToPushNotification();
+        this.#view.updateSubscribeButton(true);
+      }
+    } catch (error) {
+      this.#view.showError("Failed to handle push notification: " + error.message);
+    }
+  }
 }

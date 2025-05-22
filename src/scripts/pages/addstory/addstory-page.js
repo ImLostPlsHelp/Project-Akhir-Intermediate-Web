@@ -1,15 +1,20 @@
 import AddStoryPresenter from "./addstory-presenter";
 import * as StoriesAPI from "../../data/api";
 import { navigateTo } from "../../routes/url-parser";
+import {
+  initializePushNotifications,
+  subscribeUserToPush,
+  unsubscribeFromPush,
+} from "../../subscribe/subscribe";
 
 export default class AddStory {
-    constructor() {
-      this.presenter = new AddStoryPresenter({ view: this, model: StoriesAPI });
-      this.showError = this.showError.bind(this);
-      this.onStoryAdded = this.onStoryAdded.bind(this);
-      this.cameraStream = null;
-      this.capturedPhotoFile = null;
-    }
+  constructor() {
+    this.presenter = new AddStoryPresenter({ view: this, model: StoriesAPI });
+    this.showError = this.showError.bind(this);
+    this.onStoryAdded = this.onStoryAdded.bind(this);
+    this.cameraStream = null;
+    this.capturedPhotoFile = null;
+  }
 
   async render() {
     return `
@@ -30,7 +35,8 @@ export default class AddStory {
 
   async afterRender() {
     // Do your job here
-    const isSubscribed = await this.checkPushNotificationStatus();
+    try {
+      const isSubscribed = await this.checkPushNotificationStatus();
       this.updateSubscribeButton(isSubscribed);
 
       // Add story button event listener
@@ -54,41 +60,44 @@ export default class AddStory {
         .addEventListener("click", () => {
           this.presenter.handlePushNotificationToggle();
         });
+    } catch (error) {
+      this.showError(error.message);
     }
+  }
 
-    // Push Notification Methods
-    async checkPushNotificationStatus() {
-      return await initializePushNotifications();
-    }
+  // Push Notification Methods
+  async checkPushNotificationStatus() {
+    return await initializePushNotifications();
+  }
 
-    async subscribeToPushNotification() {
-      return await subscribeUserToPush();
-    }
+  async subscribeToPushNotification() {
+    return await subscribeUserToPush();
+  }
 
-    async unsubscribeFromPushNotification() {
-      return await unsubscribeFromPush();
-    }
+  async unsubscribeFromPushNotification() {
+    return await unsubscribeFromPush();
+  }
 
-    updateSubscribeButton(isSubscribed) {
-      const button = document.getElementById("subscribe-notification");
-      button.textContent = isSubscribed 
-        ? "Unsubscribe from Notifications" 
-        : "Subscribe to Notifications";
-    }
+  updateSubscribeButton(isSubscribed) {
+    const button = document.getElementById("subscribe-notification");
+    button.textContent = isSubscribed
+      ? "Unsubscribe from Notifications"
+      : "Subscribe to Notifications";
+  }
 
-    showLoading(isLoading) {
-      const submitButton = document.querySelector('button[type="submit"]');
-      if (submitButton) {
-        submitButton.disabled = isLoading;
-        submitButton.textContent = isLoading ? "Submitting..." : "Submit";
-      }
+  showLoading(isLoading) {
+    const submitButton = document.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = isLoading;
+      submitButton.textContent = isLoading ? "Submitting..." : "Submit";
     }
+  }
 
   stopCurrentStream = () => {
-      if (!(this.cameraStream instanceof MediaStream)) return;
-      this.cameraStream.getTracks().forEach((track) => track.stop());
-      this.cameraStream = null;
-    };
+    if (!(this.cameraStream instanceof MediaStream)) return;
+    this.cameraStream.getTracks().forEach((track) => track.stop());
+    this.cameraStream = null;
+  };
 
   renderAddStoryForm() {
     const form = document.createElement("form");

@@ -189,9 +189,9 @@ export default class AddStory {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            deviceId: {
-              exact: !streaming ? undefined : cameraListSelect.value,
-            },
+            ...(streaming && cameraListSelect.value
+              ? { deviceId: { exact: cameraListSelect.value } }
+              : {}),
             width: 1280,
             height: 720,
           },
